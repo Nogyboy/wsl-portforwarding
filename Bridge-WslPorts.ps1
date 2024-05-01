@@ -22,8 +22,11 @@ $fireWallDisplayName = '"WSL2 Port Bridge"';
 $portsStr = $ports -join ",";
 
 Invoke-Expression "Remove-NetFireWallRule -DisplayName $fireWallDisplayName";
-Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Outbound -Action Allow -Protocol TCP -LocalPort $portsStr";
-Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Inbound -Action Allow -Protocol TCP -LocalPort $portsStr";
+Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Outbound -Action Allow -Protocol TCP -LocalPort $portsStr,8000";
+Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Inbound -Action Allow -Protocol TCP -LocalPort $portsStr,8000";
+
+# Server forwarding
+Invoke-Expression "netsh interface portproxy add v4tov4 listenport=8000 listenaddress=0.0.0.0 connectport=8000 connectaddress=127.0.0.1";
 
 # Print port forwarded
 Invoke-Expression "netsh interface portproxy show v4tov4"
